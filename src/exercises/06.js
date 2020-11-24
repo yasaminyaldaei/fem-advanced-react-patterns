@@ -1,7 +1,7 @@
 // prop getters
 
 import React from 'react'
-import {Switch} from '../switch'
+import { Switch } from '../switch'
 
 // Check out the previous usage example. How would someone pass
 // a custom `onClick` handler? It'd be pretty tricky! It'd be
@@ -16,20 +16,28 @@ import {Switch} from '../switch'
 // const callAll = (...fns) => (...args) => fns.forEach(fn => fn && fn(...args))
 
 class Toggle extends React.Component {
-  state = {on: false}
+  state = { on: false }
   toggle = () =>
     this.setState(
-      ({on}) => ({on: !on}),
+      ({ on }) => ({ on: !on }),
       () => this.props.onToggle(this.state.on),
     )
   getStateAndHelpers() {
     return {
       on: this.state.on,
       toggle: this.toggle,
-      togglerProps: {
-        'aria-expanded': this.state.on,
-        onClick: this.toggle,
-      },
+      getTogglerProps: ({onClick, ...props}) => {
+        return (
+          {
+            'aria-expanded': this.state.on,
+            onClick: (...args) => {
+              onClick && onClick(...args);
+              this.toggle()
+            },
+            ...props
+          }
+        )
+      }
     }
   }
   render() {
@@ -46,9 +54,9 @@ function Usage({
 }) {
   return (
     <Toggle onToggle={onToggle}>
-      {({on, getTogglerProps}) => (
+      {({ on, getTogglerProps }) => (
         <div>
-          <Switch {...getTogglerProps({on})} />
+          <Switch {...getTogglerProps({ on })} />
           <hr />
           <button
             {...getTogglerProps({
@@ -66,4 +74,4 @@ function Usage({
 }
 Usage.title = 'Prop Getters'
 
-export {Toggle, Usage as default}
+export { Toggle, Usage as default }
