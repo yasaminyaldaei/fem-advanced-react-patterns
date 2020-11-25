@@ -22,6 +22,9 @@ class Toggle extends React.Component {
       ({on}) => ({on: !on}),
       () => this.props.onToggle(this.state.on),
     )
+  static On = (props) => props.on ? props.children : null;
+  static Off = (props) => !props.on ? props.children : null;
+  static Button = (props) => <Switch on={props.on} onClick={props.toggle} />
   render() {
     // we're trying to let people render the components they want within the Toggle component.
     // But the On, Off, and Button components will need access to the internal `on` state as
@@ -34,7 +37,12 @@ class Toggle extends React.Component {
     //
     // 🐨 you'll want to completely replace the code below with the above logic.
     const {on} = this.state
-    return <Switch on={on} onClick={this.toggle} />
+    return React.Children.map(this.props.children, childElement => {
+      return React.cloneElement(childElement, {
+        on,
+        toggle: this.toggle,
+      })
+    })
   }
 }
 
