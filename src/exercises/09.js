@@ -23,7 +23,7 @@ class Toggle extends React.Component {
       const reducedChanges =
         this.props.stateReducer(state, changesObject) || {}
       // 🐨  in addition to what we've done, let's pluck off the `type`
-      // property and return an object only of the state changes
+      // property and return an object only if the state changes
       // 💰 to remove the `type`, you can destructure the changes:
       // `{type, ...c}`
       return Object.keys(reducedChanges).length
@@ -47,7 +47,7 @@ class Toggle extends React.Component {
     // 🐨 change `this.toggle` to `() => this.toggle()`
     // to avoid passing the click event to this.toggle.
     onClick: callAll(onClick, this.toggle),
-    'aria-expanded': this.state.on,
+    'aria-pressed': this.state.on,
     ...props,
   })
   getStateAndHelpers() {

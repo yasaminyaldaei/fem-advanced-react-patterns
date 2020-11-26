@@ -1,73 +1,77 @@
 import React from 'react'
-import {
-  findAllInRenderedTree,
-  isCompositeComponentWithType,
-} from 'react-dom/test-utils'
 import chalk from 'chalk'
-import {renderToggle} from '../../test/utils'
-import Usage, {Debug} from '../exercises-final/12'
-// import Usage, {Debug} from '../exercises/12'
-
-const findDebugInstance = (rootInstance, child) =>
-  findAllInRenderedTree(rootInstance, c => {
-    return (
-      isCompositeComponentWithType(c, Debug) &&
-      c.props.child === child
-    )
-  })[0]
-
-const getDebugChild = debugInstance =>
-  debugInstance._reactInternalFiber.child
+import {renderToggle, render} from '../../test/utils'
+import Usage, {withToggle} from '../exercises-final/12'
+// import Usage, {withToggle} from '../exercises/12'
 
 test('renders a toggle component', () => {
-  const {
-    toggleButton,
-    toggle,
-    container,
-    rootInstance,
-  } = renderToggle(<Usage />)
-  const debugInstance = findDebugInstance(rootInstance, 'subtitle')
-  try {
-    expect(debugInstance.childInstance.current).not.toBeNull()
-    expect(debugInstance.childInstance.current.instanceProperty).toBe(
-      true,
-    )
-  } catch (error) {
-    const helpfulMessage = chalk.red(
-      `🚨  Make sure you're using React.forwardRef and passing the ref property to the rendered Component  🚨`,
-    )
-    error.message = `${helpfulMessage}\n\n${error.message}`
-    throw error
-  }
-  const subtitleWrapperFiberNode = getDebugChild(debugInstance)
-  try {
-    expect(subtitleWrapperFiberNode.type.render.displayName).toMatch(
-      'withToggle(Subtitle)',
-    )
-  } catch (error) {
-    const helpfulMessage = chalk.red(
-      `🚨  Make sure you're adding a displayName prop to your Wrapper  🚨`,
-    )
-    error.message = `${helpfulMessage}\n\n${error.message}`
-    throw error
-  }
-  try {
-    expect(subtitleWrapperFiberNode.type).toMatchObject({
-      emoji: '👩‍🏫 👉 🕶',
-      text: 'Teachers are awesome',
-    })
-  } catch (error) {
-    const helpfulMessage = chalk.red(
-      `🚨  Make sure you use hoistNonReactStatics(Wrapper, Component)  🚨`,
-    )
-    error.message = `${helpfulMessage}\n\n${error.message}`
-    throw error
-  }
+  const handleToggle = jest.fn()
+  const {toggleButton, toggle, container} = renderToggle(
+    <Usage onToggle={handleToggle} />,
+  )
   expect(toggleButton).toBeOff()
-  expect(container.firstChild).toMatchSnapshot()
+  expect(container).toHaveTextContent('The button is off')
   toggle()
   expect(toggleButton).toBeOn()
-  expect(container.firstChild).toMatchSnapshot()
+  expect(container).toHaveTextContent('The button is on')
+  expect(handleToggle).toHaveBeenCalledTimes(1)
+  expect(handleToggle).toHaveBeenCalledWith(true)
+})
+
+test('forwards refs properly React.forwardRef', () => {
+  class MyComp extends React.Component {
+    instanceProp = true
+    render() {
+      return <div />
+    }
+  }
+  const Wrapper = withToggle(MyComp)
+  const myRef = React.createRef()
+  render(<Wrapper ref={myRef} />)
+  try {
+    expect(myRef.current.instanceProp).toBe(true)
+  } catch (error) {
+    const helpfulMessage = chalk.red(
+      `🚨  Make sure you're using React.forwardRef and returning the component that gives you!  🚨`,
+    )
+    error.message = `${helpfulMessage}\n\n${error.message}`
+    throw error
+  }
+})
+
+test('provides a good displayName', () => {
+  const MyComp = () => null
+  const Wrapper = withToggle(MyComp)
+  try {
+    expect(Wrapper.render.displayName).toBe('withToggle(MyComp)')
+  } catch (error) {
+    const helpfulMessage = chalk.red(
+      `🚨  Make sure you're adding the displayName property to the component that is being returned.  🚨`,
+    )
+    error.message = `${helpfulMessage}\n\n${error.message}`
+    throw error
+  }
+})
+
+test('handles static properties', () => {
+  const MyComp = withToggle(
+    class extends React.Component {
+      static MyDiv = () => <div>my div</div>
+      render() {
+        return <MyComp.MyDiv />
+      }
+    },
+  )
+  const Wrapper = withToggle(MyComp)
+  try {
+    render(<Wrapper />)
+  } catch (error) {
+    const helpfulMessage = chalk.red(
+      `🚨  Make sure you're using hoistNonReactStatics on the component that's being returned  🚨`,
+    )
+    error.message = `${helpfulMessage}\n\n${error.message}`
+    throw error
+  }
 })
 
 //////// Elaboration & Feedback /////////
@@ -77,7 +81,7 @@ test('renders a toggle component', () => {
 // 3. Change submitted from `false` to `true`
 // 4. And you're all done!
 /*
-http://ws.kcd.im/?ws=react%20patterns&e=12&em=yasaminyaldaei@gmail.com
+http://ws.kcd.im/?ws=react%20patterns&e=12&em=
 */
 test.skip('I submitted my elaboration and feedback', () => {
   const submitted = false // change this when you've submitted!

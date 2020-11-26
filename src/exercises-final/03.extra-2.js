@@ -1,39 +1,57 @@
 // Flexible Compound Components with context
+// This allows you to avoid unecessary rerenders
 
 import React from 'react'
 import {Switch} from '../switch'
 
 const ToggleContext = React.createContext()
 
+function ToggleConsumer(props) {
+  return (
+    <ToggleContext.Consumer {...props}>
+      {context => {
+        if (!context) {
+          throw new Error(
+            `Toggle compound components cannot be rendered outside the Toggle component`,
+          )
+        }
+        return props.children(context)
+      }}
+    </ToggleContext.Consumer>
+  )
+}
+
 class Toggle extends React.Component {
   static On = ({children}) => (
-    <ToggleContext.Consumer>
+    <ToggleConsumer>
       {({on}) => (on ? children : null)}
-    </ToggleContext.Consumer>
+    </ToggleConsumer>
   )
   static Off = ({children}) => (
-    <ToggleContext.Consumer>
+    <ToggleConsumer>
       {({on}) => (on ? null : children)}
-    </ToggleContext.Consumer>
+    </ToggleConsumer>
   )
   static Button = props => (
-    <ToggleContext.Consumer>
+    <ToggleConsumer>
       {({on, toggle}) => (
         <Switch on={on} onClick={toggle} {...props} />
       )}
-    </ToggleContext.Consumer>
+    </ToggleConsumer>
   )
-  state = {on: false}
+  // The reason we had to move `toggle` above `state` is because
+  // in our `state` initialization we're _using_ `this.toggle`. So
+  // if `this.toggle` is not defined before state is initialized, then
+  // `state.toggle` will be undefined.
   toggle = () =>
     this.setState(
       ({on}) => ({on: !on}),
       () => this.props.onToggle(this.state.on),
     )
+  state = {on: false, toggle: this.toggle}
   render() {
     return (
-      <ToggleContext.Provider
-        value={{on: this.state.on, toggle: this.toggle}}
-      >
+      <ToggleContext.Provider value={this.state}>
         {this.props.children}
       </ToggleContext.Provider>
     )

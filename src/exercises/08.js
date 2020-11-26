@@ -19,6 +19,9 @@ const callAll = (...fns) => (...args) =>
 // What this means for our implementation is that we can create a single
 // function that does all the work before calling setState. Then we can
 // replace all calls to setState with that function.
+//
+// Learn more about the state reducers pattern here:
+// https://blog.kentcdodds.com/b40316cfac57
 
 class Toggle extends React.Component {
   static defaultProps = {
@@ -31,7 +34,7 @@ class Toggle extends React.Component {
   initialState = { on: this.props.initialOn }
   state = this.initialState
   // 🐨 let's add a method here called `internalSetState`. It will simulate
-  // the same API as `setState(updates, callback)`:
+  // the same API as `setState(updater, callback)`:
   // - updater: (changes object or function that returns the changes object)
   // - callback: Function called after the state has been updated
   // This will call setState with an updater function (a function that receives the state).
@@ -63,7 +66,7 @@ class Toggle extends React.Component {
     )
   getTogglerProps = ({ onClick, ...props } = {}) => ({
     onClick: callAll(onClick, this.toggle),
-    'aria-expanded': this.state.on,
+    'aria-pressed': this.state.on,
     ...props,
   })
   getStateAndHelpers() {

@@ -1,20 +1,29 @@
 // control props primer
+// this makes the `getState` function more flexible
 
 import React from 'react'
 import {Switch} from '../switch'
 
 class Toggle extends React.Component {
   state = {on: false}
-  isOnControlled() {
-    return this.props.on !== undefined
+  isControlled(prop) {
+    return this.props[prop] !== undefined
   }
   getState() {
-    return {
-      on: this.isOnControlled() ? this.props.on : this.state.on,
-    }
+    return Object.entries(this.state).reduce(
+      (combinedState, [key, value]) => {
+        if (this.isControlled(key)) {
+          combinedState[key] = this.props[key]
+        } else {
+          combinedState[key] = value
+        }
+        return combinedState
+      },
+      {},
+    )
   }
   toggle = () => {
-    if (this.isOnControlled()) {
+    if (this.isControlled('on')) {
       this.props.onToggle(!this.getState().on)
     } else {
       this.setState(
@@ -26,8 +35,7 @@ class Toggle extends React.Component {
     }
   }
   render() {
-    const {on} = this.getState()
-    return <Switch on={on} onClick={this.toggle} />
+    return <Switch on={this.getState().on} onClick={this.toggle} />
   }
 }
 
@@ -55,6 +63,6 @@ class Usage extends React.Component {
     )
   }
 }
-Usage.title = 'Control Props (primer)'
+Usage.title = 'Control Props'
 
 export {Toggle, Usage as default}

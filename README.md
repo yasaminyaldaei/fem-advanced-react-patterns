@@ -4,12 +4,18 @@
 workshop repo to teach you about using React Component Patterns to make your
 react components more useful and reusable without sacrificing simplicity.
 
+## Following along with Frontend Masters?
+
+Head to
+[the `frontend-masters` branch](https://github.com/kentcdodds/advanced-react-patterns-v2/tree/frontend-masters)
+to get started!
+
 [![chat-badge][chat-badge]][chat]
 [![Build Status][build-badge]][build]
 [![AppVeyor Build Status][win-build-badge]][win-build]
 [![Code Coverage][coverage-badge]][coverage]
 [![MIT License][license-badge]][license]
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors)
 
 [![PRs Welcome][prs-badge]][prs]
 [![Code of Conduct][coc-badge]][coc]
@@ -39,7 +45,7 @@ variable and how to fix it here for [windows][win-path] or
 ## Setup
 
 You may be able to work through the entire workshop in the browser. Go to
-[this codesandbox](https://codesandbox.io/s/github/kentcdodds/advanced-react-patterns-v2/tree/frontend-masters)
+[this codesandbox](https://codesandbox.io/s/github/kentcdodds/advanced-react-patterns-v2)
 and you should be good to go.
 
 If you'd rather be able to work through the workshop on your own computer, then
@@ -51,7 +57,6 @@ should be able to just run a few commands to get set up:
 ```
 git clone https://github.com/kentcdodds/advanced-react-patterns-v2.git
 cd advanced-react-patterns-v2
-git checkout frontend-masters
 npm run setup --silent
 ```
 
@@ -89,12 +94,14 @@ output and play around with it.
 **Your goal will be to go into each test, swap the final version for the
 exercise version in the import, and make the tests pass**
 
-## Helpful Emoji 🐨 💰
+## Helpful Emoji 🐨 💰 💯
 
 Each exercise has comments in it to help you get through the exercise.
 **Kody the Koala Bear** and **Marty the Money Bag** are here to help you.
 **Kody** 🐨 will tell you when there's something specific you should do, and
-**Marty** 💰 will give you specific tips along the way.
+**Marty** 💰 will give you specific tips along the way. Should you finish
+early, **Hannah the Hundred Points Symbol** 💯 will give you some additional
+challenges that you can try!
 
 ## Troubleshooting
 
@@ -129,10 +136,25 @@ help if I can.
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-
 <!-- prettier-ignore -->
-| [<img src="https://avatars.githubusercontent.com/u/1500684?v=3" width="100px;"/><br /><sub><b>Kent C. Dodds</b></sub>](https://kentcdodds.com)<br />[💻](https://github.com/kentcdodds/advanced-component-patterns-v2/commits?author=kentcdodds "Code") [📖](https://github.com/kentcdodds/advanced-component-patterns-v2/commits?author=kentcdodds "Documentation") [🚇](#infra-kentcdodds "Infrastructure (Hosting, Build-Tools, etc)") [⚠️](https://github.com/kentcdodds/advanced-component-patterns-v2/commits?author=kentcdodds "Tests") | [<img src="https://avatars0.githubusercontent.com/u/1250430?v=4" width="100px;"/><br /><sub><b>FWeinb</b></sub>](https://github.com/FWeinb)<br />[🐛](https://github.com/kentcdodds/advanced-component-patterns-v2/issues?q=author%3AFWeinb "Bug reports") [🤔](#ideas-FWeinb "Ideas, Planning, & Feedback") | [<img src="https://avatars2.githubusercontent.com/u/1383720?v=4" width="100px;"/><br /><sub><b>David Lannoye</b></sub>](https://github.com/dlannoye)<br />[🐛](https://github.com/kentcdodds/advanced-component-patterns-v2/issues?q=author%3Adlannoye "Bug reports") [📖](https://github.com/kentcdodds/advanced-component-patterns-v2/commits?author=dlannoye "Documentation") | [<img src="https://avatars2.githubusercontent.com/u/9815009?s=460&v=4" width="100px;"/><br /><sub><b>Colin Cummings</b></sub>](https://github.com/colinrcummings)<br />[💻](https://github.com/kentcdodds/advanced-component-patterns-v2/commits?author=colinrcummings "Code") [⚠️](https://github.com/kentcdodds/advanced-component-patterns-v2/commits?author=colinrcummings "Tests") | [<img src="https://avatars2.githubusercontent.com/u/464764?v=4" width="100px;"/><br /><sub><b>Benji Koltai</b></sub>](https://github.com/bkoltai)<br />[📖](https://github.com/kentcdodds/advanced-component-patterns-v2/commits?author=bkoltai "Documentation") |
-| :---: | :---: | :---: | :---: | :---: |
+<table>
+  <tr>
+    <td align="center"><a href="https://kentcdodds.com"><img src="https://avatars.githubusercontent.com/u/1500684?v=3" width="100px;" alt="Kent C. Dodds"/><br /><sub><b>Kent C. Dodds</b></sub></a><br /><a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=kentcdodds" title="Code">💻</a> <a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=kentcdodds" title="Documentation">📖</a> <a href="#infra-kentcdodds" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=kentcdodds" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/FWeinb"><img src="https://avatars0.githubusercontent.com/u/1250430?v=4" width="100px;" alt="FWeinb"/><br /><sub><b>FWeinb</b></sub></a><br /><a href="https://github.com/kentcdodds/advanced-react-patterns-v2/issues?q=author%3AFWeinb" title="Bug reports">🐛</a> <a href="#ideas-FWeinb" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/dlannoye"><img src="https://avatars2.githubusercontent.com/u/1383720?v=4" width="100px;" alt="David Lannoye"/><br /><sub><b>David Lannoye</b></sub></a><br /><a href="https://github.com/kentcdodds/advanced-react-patterns-v2/issues?q=author%3Adlannoye" title="Bug reports">🐛</a> <a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=dlannoye" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/colinrcummings"><img src="https://avatars2.githubusercontent.com/u/9815009?s=460&v=4" width="100px;" alt="Colin Cummings"/><br /><sub><b>Colin Cummings</b></sub></a><br /><a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=colinrcummings" title="Code">💻</a> <a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=colinrcummings" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/bkoltai"><img src="https://avatars2.githubusercontent.com/u/464764?v=4" width="100px;" alt="Benji Koltai"/><br /><sub><b>Benji Koltai</b></sub></a><br /><a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=bkoltai" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://baggasumit.github.io"><img src="https://avatars1.githubusercontent.com/u/1779959?v=4" width="100px;" alt="Sumit Bagga"/><br /><sub><b>Sumit Bagga</b></sub></a><br /><a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=baggasumit" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/Tarabyte"><img src="https://avatars0.githubusercontent.com/u/2027010?v=4" width="100px;" alt="Yury Tarabanko"/><br /><sub><b>Yury Tarabanko</b></sub></a><br /><a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=Tarabyte" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://www.wendtedesigns.com/"><img src="https://avatars2.githubusercontent.com/u/5779538?v=4" width="100px;" alt="Alex Wendte"/><br /><sub><b>Alex Wendte</b></sub></a><br /><a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=themostcolm" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/rahildar"><img src="https://avatars2.githubusercontent.com/u/16776182?v=4" width="100px;" alt="rahildar"/><br /><sub><b>rahildar</b></sub></a><br /><a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=rahildar" title="Code">💻</a></td>
+    <td align="center"><a href="http://konekoya.github.io/"><img src="https://avatars1.githubusercontent.com/u/12165714?v=4" width="100px;" alt="Joshua"/><br /><sub><b>Joshua</b></sub></a><br /><a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=konekoya" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/nicolas-orchow/"><img src="https://avatars3.githubusercontent.com/u/7334576?v=4" width="100px;" alt="Nicolas Orchow"/><br /><sub><b>Nicolas Orchow</b></sub></a><br /><a href="https://github.com/kentcdodds/advanced-react-patterns-v2/commits?author=norchow" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://codefund.io"><img src="https://avatars2.githubusercontent.com/u/12481?v=4" width="100px;" alt="Eric Berry"/><br /><sub><b>Eric Berry</b></sub></a><br /><a href="#fundingFinding-coderberry" title="Funding Finding">🔍</a></td>
+  </tr>
+</table>
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
@@ -176,3 +198,4 @@ at kent@doddsfamily.us
 [coverage-badge]: https://img.shields.io/codecov/c/github/kentcdodds/advanced-react-patterns-v2.svg?style=flat-square
 [coverage]: https://codecov.io/github/kentcdodds/advanced-react-patterns-v2
 [watchman]: https://facebook.github.io/watchman/docs/install.html
+# fem-advanced-react-patterns

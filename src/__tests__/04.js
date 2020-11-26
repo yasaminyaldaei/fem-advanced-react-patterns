@@ -1,7 +1,7 @@
 import React from 'react'
-import {renderToggle, Simulate} from '../../test/utils'
-// import Usage from '../exercises-final/04'
-import Usage from '../exercises/04'
+import {renderToggle, fireEvent} from '../../test/utils'
+import Usage from '../exercises-final/04'
+// import Usage from '../exercises/04'
 
 test('renders a toggle component', () => {
   const handleToggle = jest.fn()
@@ -21,7 +21,7 @@ test('can also toggle with the button', () => {
     <Usage onToggle={handleToggle} />,
   )
   expect(toggleButton).toBeOff()
-  Simulate.click(getByLabelText('custom-button'))
+  fireEvent.click(getByLabelText('custom-button'))
   expect(toggleButton).toBeOn()
   expect(handleToggle).toHaveBeenCalledTimes(1)
   expect(handleToggle).toHaveBeenCalledWith(true)
@@ -34,10 +34,10 @@ test('can also toggle with the button', () => {
 // 3. Change submitted from `false` to `true`
 // 4. And you're all done!
 /*
-http://ws.kcd.im/?ws=react%20patterns&e=04&em=yasaminyaldaei@gmail.com
+http://ws.kcd.im/?ws=react%20patterns&e=04&em=
 */
-test('I submitted my elaboration and feedback', () => {
-  const submitted = true // change this when you've submitted!
+test.skip('I submitted my elaboration and feedback', () => {
+  const submitted = false // change this when you've submitted!
   expect(submitted).toBe(true)
 })
 ////////////////////////////////
