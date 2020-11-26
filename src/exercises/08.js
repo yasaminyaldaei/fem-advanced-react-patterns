@@ -1,7 +1,7 @@
 // state reducer
 
 import React from 'react'
-import {Switch} from '../switch'
+import { Switch } from '../switch'
 
 const callAll = (...fns) => (...args) =>
   fns.forEach(fn => fn && fn(...args))
@@ -23,11 +23,12 @@ const callAll = (...fns) => (...args) =>
 class Toggle extends React.Component {
   static defaultProps = {
     initialOn: false,
-    onReset: () => {},
+    onReset: () => { },
     // 🐨 let's add a default stateReducer here. It should return
     // the changes object as it is passed.
+    stateReducer: (state, changes) => changes
   }
-  initialState = {on: this.props.initialOn}
+  initialState = { on: this.props.initialOn }
   state = this.initialState
   // 🐨 let's add a method here called `internalSetState`. It will simulate
   // the same API as `setState(updates, callback)`:
@@ -35,7 +36,13 @@ class Toggle extends React.Component {
   // - callback: Function called after the state has been updated
   // This will call setState with an updater function (a function that receives the state).
   // If the changes are a function, then call that function with the state to get the actual changes
-  //
+  internalSetState = (updater, callback) => {
+    this.setState(currentState => {
+      const sth = typeof updater === "function" ? updater(currentState) : updater;
+      const changes = this.props.stateReducer(currentState, sth)
+      return (changes || updater)
+    }, callback)
+  }
   // 🐨 Call this.props.stateReducer with the `state` and `changes` to get the user changes.
   //
   // 🐨 Then, if the returned value exists and has properties, return that from your updater function.
@@ -46,15 +53,15 @@ class Toggle extends React.Component {
   // 🐨 Finally, update all pre-existing instances of this.setState
   // to this.internalSetState
   reset = () =>
-    this.setState(this.initialState, () =>
+    this.internalSetState(this.initialState, () =>
       this.props.onReset(this.state.on),
     )
   toggle = () =>
-    this.setState(
-      ({on}) => ({on: !on}),
+    this.internalSetState(
+      ({ on }) => ({ on: !on }),
       () => this.props.onToggle(this.state.on),
     )
-  getTogglerProps = ({onClick, ...props} = {}) => ({
+  getTogglerProps = ({ onClick, ...props } = {}) => ({
     onClick: callAll(onClick, this.toggle),
     'aria-expanded': this.state.on,
     ...props,
@@ -80,10 +87,10 @@ class Usage extends React.Component {
     onToggle: (...args) => console.log('onToggle', ...args),
     onReset: (...args) => console.log('onReset', ...args),
   }
-  initialState = {timesClicked: 0}
+  initialState = { timesClicked: 0 }
   state = this.initialState
   handleToggle = (...args) => {
-    this.setState(({timesClicked}) => ({
+    this.setState(({ timesClicked }) => ({
       timesClicked: timesClicked + 1,
     }))
     this.props.onToggle(...args)
@@ -94,12 +101,12 @@ class Usage extends React.Component {
   }
   toggleStateReducer = (state, changes) => {
     if (this.state.timesClicked >= 4) {
-      return {...changes, on: false}
+      return { ...changes, on: false }
     }
     return changes
   }
   render() {
-    const {timesClicked} = this.state
+    const { timesClicked } = this.state
     return (
       <Toggle
         stateReducer={this.toggleStateReducer}
@@ -132,7 +139,7 @@ class Usage extends React.Component {
 }
 Usage.title = 'State Reducers'
 
-export {Toggle, Usage as default}
+export { Toggle, Usage as default }
 
 /* eslint
 "no-unused-vars": [
