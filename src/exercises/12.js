@@ -1,17 +1,62 @@
-// The provider pattern
-import React, {Fragment} from 'react'
-// 🐨 you're going to need this :)
-// import hoistNonReactStatics from 'hoist-non-react-statics'
+
+// Higher Order Components
+
+import React from 'react'
+import hoistNonReactStatics from 'hoist-non-react-statics'
 import {Switch} from '../switch'
 
-const ToggleContext = React.createContext()
+const ToggleContext = React.createContext({
+  on: false,
+  toggle: () => {},
+  reset: () => {},
+  getTogglerProps: () => ({}),
+})
+
+const callAll = (...fns) => (...args) =>
+  fns.forEach((fn) => fn && fn(...args))
 
 class Toggle extends React.Component {
   static Consumer = ToggleContext.Consumer
   toggle = () =>
     this.setState(
-      ({on}) => ({on: !on}),
-      () => this.props.onToggle(this.state.on),
+      (state) => {
+        const combinedState = this.getState(state)
+        // handle function setState call
+        const changesObject =
+          typeof changes === 'function'
+            ? changes(combinedState)
+            : changes
+
+        // apply state reducer
+        allChanges =
+          this.props.stateReducer(combinedState, changesObject) || {}
+
+        // remove the type so it's not set into state
+        const {type: ignoredType, ...onlyChanges} = allChanges
+
+        const nonControlledChanges = Object.keys(
+          combinedState,
+        ).reduce((newChanges, stateKey) => {
+          if (!this.isControlled(stateKey)) {
+            newChanges[stateKey] = onlyChanges.hasOwnProperty(
+              stateKey,
+            )
+              ? onlyChanges[stateKey]
+              : combinedState[stateKey]
+          }
+          return newChanges
+        }, {})
+
+        // return null if there are no changes to be made
+        return Object.keys(nonControlledChanges || {}).length
+          ? nonControlledChanges
+          : null
+      },
+      () => {
+        // call onStateChange with all the changes (including the type)
+        this.props.onStateChange(allChanges, this.state)
+        callback()
+      },
     )
   state = {on: false, toggle: this.toggle}
   render() {
@@ -22,51 +67,158 @@ class Toggle extends React.Component {
 }
 
 function withToggle(Component) {
-  return Component
-  // The `withToggle` function is called a "Higher Order Component"
-  // It's another way to share code and allows you to statically
-  // create new components to render.
-  // The basic idea is you create a new component that renders the
-  // component the HOC is given.
-  //
-  // This presents a few issues that we'll have to deal with in our
-  // component.
-  //
-  // 1. 🐨 create and return a function component called "Wrapper" which renders
-  //    a <Toggle.Consumer> with a child function that renders <Component />
-  //    with the props Wrapper is given as well as a toggle prop
-  // 2. 🐨 Handle `ref`s properly by using React.forwardRef:
-  //    https://reactjs.org/docs/forwarding-refs.html
-  //    💰 You can make your Wrapper function accept a second argument called
-  //    `ref` and `return React.forwardRef(Wrapper)` instead of the
-  //    `return Component` we already have above.
-  // 3. 🐨 Make it easier to debug using the React DevTools by setting a
-  //    useful `displayName` property on the Wrapper.
-  //    💰 `Wrapper.displayName = ...`
-  // 4. 🐨 Use the `hoistNonReactStatics` function (uncomment the imported above)
-  //    by calling it with the Wrapper and the Component to forward all the
-  //    static properties from the Component to the Wrapper
-  //    💰 `return hoistReactStatics(React.forwardRef(Wrapper), Component)`
+
+  function Wrapper(props, ref) {
+    return (
+      <Toggle.Consumer>
+        {toggleContext => (
+          <Component {...props} toggle={toggleContext} ref={ref} />
+        )}
+      </Toggle.Consumer>
+    )
+  }
+  Wrapper.displayName = `withToggle(${Component.displayName ||
+    Component.name})`
+  return hoistNonReactStatics(React.forwardRef(Wrapper), Component)
 }
 
-// Don't make changes to the Usage component. It's here to show you how your
-// component is intended to be used and is used in the tests.
-// You can make all the tests pass by updating the Toggle component.
-const Layer1 = () => <Layer2 />
-const Layer2 = withToggle(({toggle: {on}}) => (
-  <Fragment>
-    {on ? 'The button is on' : 'The button is off'}
-    <Layer3 />
-  </Fragment>
-))
-const Layer3 = () => <Layer4 />
-const Layer4 = withToggle(({toggle: {on, toggle}}) => (
-  <Switch on={on} onClick={toggle} />
-))
+/////////////////////////////////////////////////////////
+//
+// You shouldn't have to change anything below this point
+//
+/////////////////////////////////////////////////////////
 
-function Usage({
-  onToggle = (...args) => console.log('onToggle', ...args),
-}) {
+// this Subtitle component could be as simple as:
+// const Subtitle = withToggle(({toggle: {on}}) => (
+//   <span>{on ? '👩‍🏫 👉 🕶' : 'Teachers are awesome'}</span>
+// ))
+// But for the purposes of this workshop, we've made it a little more complex
+// just to ensure you're HOC handles common issues with HOCs
+const Subtitle = withToggle(
+  class extends React.Component {
+    static displayName = 'Subtitle'
+    static emoji = '👩‍🏫 👉 🕶'
+    static text = 'Teachers are awesome'
+    instanceProperty = true
+    render() {
+      return (
+        <span>
+          {this.props.toggle.on ? Subtitle.emoji : Subtitle.text}
+        </span>
+      )
+    }
+  },
+)
+
+function Nav() {
+  return (
+    <Toggle.Consumer>
+      {(toggle) => (
+        <nav>
+          <ul>
+            <li>
+              <a href="index.html">{toggle.on ? '🏡' : 'Home'}</a>
+            </li>
+            <li>
+              <a href="/about/">{toggle.on ? '❓' : 'About'}</a>
+            </li>
+            <li>
+              <a href="/blog/">{toggle.on ? '📖' : 'Blog'}</a>
+            </li>
+          </ul>
+        </nav>
+      )}
+    </Toggle.Consumer>
+  )
+}
+
+function NavSwitch() {
+  return (
+    <div className="nav-switch">
+      <div>
+        <Toggle.Consumer>
+          {(toggle) => (toggle.on ? '🦄' : 'Enable Emoji')}
+        </Toggle.Consumer>
+      </div>
+      <Toggle.Consumer>
+        {(toggle) => (
+          <Switch
+            {...toggle.getTogglerProps({
+              on: toggle.on,
+            })}
+          />
+        )}
+      </Toggle.Consumer>
+    </div>
+  )
+}
+
+function Header() {
+  return (
+    <div className="header">
+      <Nav />
+      <NavSwitch />
+    </div>
+  )
+}
+
+// This is part of our contrived example so we can test things properly
+// to make sure your HOC handles common issues
+export class Debug extends React.Component {
+  childInstance = React.createRef()
+  render() {
+    return React.cloneElement(this.props.children, {
+      ref: this.childInstance,
+    })
+  }
+}
+
+function Title() {
+  return (
+    <div>
+      <h1>
+        <Toggle.Consumer>
+          {(toggle) => `Who is ${toggle.on ? '🕶❓' : 'awesome?'}`}
+        </Toggle.Consumer>
+      </h1>
+      <Debug child="subtitle">
+        <Subtitle />
+      </Debug>
+    </div>
+  )
+}
+
+function Article() {
+  return (
+    <div>
+      <Toggle.Consumer>
+        {(toggle) =>
+          [
+            'Once, I was in',
+            toggle.on ? '🏫‍' : 'school',
+            'when I',
+            toggle.on ? '🤔' : 'realized',
+            'something...',
+          ].join(' ')
+        }
+      </Toggle.Consumer>
+      <hr />
+      <Toggle.Consumer>
+        {(toggle) =>
+          [
+            'Without',
+            toggle.on ? '👩‍🏫' : 'teachers',
+            `I wouldn't know anything so`,
+            toggle.on ? '🙏' : 'thanks',
+            toggle.on ? '👩‍🏫❗️' : 'teachers!',
+          ].join(' ')
+        }
+      </Toggle.Consumer>
+    </div>
+  )
+}
+
+function Post() {
   return (
     <Toggle onToggle={onToggle}>
       <Layer1 />
