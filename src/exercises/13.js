@@ -1,13 +1,19 @@
 import React from 'react'
-// import hoistNonReactStatics from 'hoist-non-react-statics'
+import hoistNonReactStatics from 'hoist-non-react-statics'
 import * as redux from 'redux'
 import {Switch} from '../switch'
+
+const RenduxContext = React.createContext({
+  state: {},
+  dispatch: () => {},
+  reset: () => {},
+})
 
 class Rendux extends React.Component {
   // I'll give you some of this because it's kinda redux-specific stuff
   static defaultProps = {
     initialState: {},
-    reducer: state => state,
+    reducer: (state) => state,
   }
   initialReduxState = this.props.initialState
   rootReducer = (state, action) => {
@@ -22,6 +28,12 @@ class Rendux extends React.Component {
       type: '__RENDUX_RESET__',
     })
   }
+  state = {
+    reset: this.reset,
+    dispatch: this.store.dispatch,
+    state: this.initialReduxState,
+  }
+  static Consumer = RenduxContext.Consumer
   componentDidMount() {
     this.unsubscribe = this.store.subscribe(() =>
       this.setState({
@@ -34,13 +46,33 @@ class Rendux extends React.Component {
   }
   render() {
     // this is your job!
-    return 'todo'
+    const ui =
+      typeof this.props.children === 'function'
+        ? this.props.children(this.state)
+        : this.props.children
+    return (
+      <RenduxContext.Provider value={this.state}>
+        {ui}
+      </RenduxContext.Provider>
+    )
   }
 }
 
-function withRendux() {
+function withRendux(Component) {
   // this is your job too!
-  return () => null
+  function Wrapper(props, ref) {
+    return (
+      <Rendux.Consumer>
+        {(rendux) => (
+          <Component {...props} rendux={rendux} ref={ref} />
+        )}
+      </Rendux.Consumer>
+    )
+  }
+  Wrapper.displayName = `withRendux(${
+    Component.displayName || Component.name
+  })`
+  return hoistNonReactStatics(React.forwardRef(Wrapper), Component)
 }
 
 /////////////////////////////////////////////////////////
@@ -52,14 +84,14 @@ function withRendux() {
 function MyInput() {
   return (
     <Rendux.Consumer>
-      {rendux => (
+      {(rendux) => (
         <input
           value={
             rendux.state.inputValue ||
             (rendux.state.on ? 'on' : 'off')
           }
           placeholder="Type 'off' or 'on'"
-          onChange={event => {
+          onChange={(event) => {
             if (event.target.value === 'on') {
               rendux.dispatch({
                 type: 'toggle',
@@ -85,7 +117,7 @@ function MyInput() {
 function MySwitch() {
   return (
     <Rendux.Consumer>
-      {rendux => (
+      {(rendux) => (
         <div
           style={{
             marginTop: 20,
